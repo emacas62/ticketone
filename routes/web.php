@@ -16,23 +16,15 @@
 $router->get('eventi','EventiController@index');
 $router->get('eventi/{id}','EventiController@show');
 
-$router->post('/eventi/crea', 'EventiController@create'); 
+$router->group(['middleware' => 'auth'], function () use ($router) {
     
-$router->post('/eventi/modifica/{id}', 'EventiController@update'); 
-
-$router->delete('/eventi/elimina/{id}', 'EventiController@destroy'); 
-
-
-
-// $router->group(['middleware' => 'auth'], function () use ($router) {
+    $router->post('/eventi', 'EventiController@create'); 
     
-//     $router->post('/eventi', 'EventiController@create'); 
+    $router->post('/eventi/{id}', 'EventiController@update'); 
     
-//     $router->post('/eventi/{id}', 'EventiController@update'); 
-    
-//     $router->delete('/eventi/{id}', 'EventiController@destroy'); 
+    $router->delete('/eventi/{id}', 'EventiController@destroy'); 
 
-// });
+});
 
 
 $router->get('/', function () use ($router) {
