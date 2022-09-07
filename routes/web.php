@@ -13,6 +13,13 @@
 |
 */
 
+$router->get('eventi','EventiController@index');
+$router->get('eventi/{id}','EventiController@show');
+$router->post('eventi/crea','EventiController@store');
+$router->post('eventi/modifica/{id}','EventiController@update');
+$router->delete('eventi/elimina/{id}','EventiController@destroy');
+
+
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
