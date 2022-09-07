@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Eventi;
+use App\Http\Resources\EventResource;
+use App\Http\Resources\EventCollection;
 
 class EventiController extends Controller
 {
@@ -11,26 +13,30 @@ class EventiController extends Controller
     public function index()
     {
         $eventi = Eventi::all();
-        return response()->json($eventi);
+        return new EventCollection($eventi);
     }
 
 
-    public function store(Request $request)
+    public function create(Request $request)
     {
         $this->validate($request, [
-            'title'=>'required',
-            'price'=>'required',
-            'description'=>'required'
+            'title'=>'required|string|min:3',
+            'price'=>'required|numeric',
+            'description'=>'required|string',
+            'date' => 'required|date',
+            'cover_url' => 'required|url',
+            'address' => 'required|string',
+            'lat' => 'required|numeric',
+            'lng' => 'required|numeric',
+            'views_count' => 'required|integer',
+            'comments_count' => 'required|integer',
+            'likes_count' => 'required|integer'
         ]);
 
-        $evento = new Eventi();
-
-        $evento->title = $request->input('title');
-        $evento->price = $request->input('price');
-        $evento->description = $request->input('description');
+        $evento = new Eventi($request->all());
 
         $evento->save();
-        return response()->json($evento);
+        return new EventResource($evento);
 
     }
 
@@ -38,33 +44,52 @@ class EventiController extends Controller
     public function show($id)
     {
         $evento = Eventi::find($id);
-        return response()->json($evento);
+
+        if($evento) {
+            return new EventResource($evento);
+        } else { 
+            return $this->failure("L'evento cercato non è stato trovato", 1, 404);
+        }
     }
 
 
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'title'=>'required',
-            'price'=>'required',
-            'description'=>'required'
+            'title' => 'string|min:3',
+            'price' => 'numeric',
+            'description' => 'string',
+            'date' => 'date',
+            'cover_url' => 'url',
+            'address' => 'string',
+            'lat' => 'numeric',
+            'lng' => 'numeric',
+            'views_count' => 'integer',
+            'comments_count' => 'integer',
+            'likes_count' => 'integer'
         ]);
 
         $evento = Eventi::find($id);
 
-        $evento->title = $request->input('title');
-        $evento->price = $request->input('price');
-        $evento->description = $request->input('description');
-
-        $evento->save();
-        return response()->json($evento);
+        if ($evento) { 
+            $evento->update($request->all());
+            return new EventResource($evento);
+        } else { 
+            return $this->failure("L'evento cercato non è stato trovato", 1, 404);
+        }
     }
 
    
     public function destroy($id)
     {
         $evento = Eventi::find($id);
-        $evento->delete();
-        return response()->json("Evento eliminato con successo!");
+
+        if ($evento) { 
+            $evento->delete();
+            return Eventi::all();
+        } else { 
+            return $this->failure("L'evento cercato non è stato trovato", 1, 404);
+        }
+        
     }
 }
