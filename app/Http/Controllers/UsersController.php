@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-use App\Models\User;
+use App\Models\Utente;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UserCollection;
 
@@ -25,7 +25,7 @@ class UsersController extends Controller
             'city' => 'required|string',
         ]);
 
-        $user = new User($request->all());
+        $user = new Utente($request->all());
         $user->authToken = Str::random(60);
         $user->password = Hash::make($request->password);
         $user->save();
@@ -40,7 +40,7 @@ class UsersController extends Controller
         ]);
 
         
-        $user = User::where('email', $request->email)->first();
+        $user = Utente::where('email', $request->email)->first();
 
         if ($user) {
             if (Hash::check($request->password, $user->password)) {
