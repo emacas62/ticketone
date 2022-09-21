@@ -26,7 +26,10 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
 });
 
+$router->post('/users', 'UsersController@create');
+
 
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+
