@@ -24,6 +24,8 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     
     $router->delete('/eventi/{id}', 'EventiController@destroy'); 
 
+    $router->delete('/profile', 'UsersController@destroy');
+
 });
 
 $router->post('/users', 'UsersController@create');

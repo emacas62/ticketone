@@ -50,4 +50,16 @@ class UsersController extends Controller
 
         return $this->failure('The entered email or password are wrong!', 2, 422);
     }
+
+    public function destroy(Request $request)
+    {
+
+        $user = $request->user();
+
+        $user->delete();
+        return response()->json("Utente eliminato con successo!");
+        
+    }
+
+    
 }
