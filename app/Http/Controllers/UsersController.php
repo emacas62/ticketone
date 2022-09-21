@@ -61,5 +61,26 @@ class UsersController extends Controller
         
     }
 
-    
+    public function update(Request $request)
+    {
+        $user = $request->user();
+
+        $this->validate($request, [
+            'password' => 'required|string|min:6|max:16',
+            'firstName' => 'required|string',
+            'lastName' => 'required|string',
+            'birthDate' => 'required|date',
+            'city' => 'required|string',
+        ]);
+
+        $user->update($request->all());
+        
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return new UserResource($user);
+    }
+
+
+
 }
